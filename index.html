@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ungu | Portfolio</title>
+  <meta name="description" content="Ungu: M.S. Data Science at Columbia. Machine learning, statistical modeling and responsible AI.">
+  <script>document.documentElement.classList.add('js');</script>
+  <style>
+    :root {
+      --bg: #fff3ea;
+      --bg-top: #fbe3e5;
+      --card: #fffdf9;
+      --text: #3b2a2e;
+      --muted: #7d6568;
+      --line: #ecd3cc;
+      --rose-deep: #b4566a;
+      --mint-soft: #e3f4ec;
+      --green: #2f7d5f;          /* buttons */
+      --green-text: #25664c;
+      --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      --sans: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--text); line-height: 1.6; font-family: var(--sans);
+      background: linear-gradient(180deg, var(--bg-top) 0, var(--bg) 460px) no-repeat, var(--bg);
+    }
+
+    /* drifting line shapes in the background (drawn by the script at the bottom) */
+    #bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 14px 20px 56px; }
+
+    /* floating menu pill */
+    nav {
+      position: sticky; top: 14px; z-index: 10; width: fit-content; margin: 0 auto;
+      background: rgba(255, 253, 249, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px;
+    }
+    nav ul { list-style: none; display: flex; gap: 6px; margin: 0; padding: 0; }
+    nav a { display: block; color: var(--muted); text-decoration: none; font-weight: 700; font-size: .9rem; padding: 6px 16px; border-radius: 999px; transition: background .2s ease, color .2s ease; }
+    nav a:hover { color: var(--rose-deep); background: rgba(180, 86, 106, 0.1); }
+
+    /* hero */
+    header { text-align: center; padding: 64px 0 0; }
+    .avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--card); box-shadow: 0 0 0 1px var(--line); margin-bottom: 22px; }
+    .eyebrow { font-size: .78rem; letter-spacing: .24em; text-transform: uppercase; color: var(--rose-deep); font-weight: 700; margin: 0 0 14px; }
+    h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(3.6rem, 14vw, 7rem); line-height: 1; letter-spacing: -0.02em; margin: 0; }
+    .skyline { display: block; width: 100%; height: auto; margin: 46px 0 0; color: var(--rose-deep); }
+
+    .intro { text-align: center; max-width: 36em; margin: 36px auto 0; color: var(--muted); font-size: 1.1rem; }
+    .contact { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 24px 0 0; }
+    .contact a {
+      color: var(--green-text); text-decoration: none; font-weight: 700; font-size: .95rem;
+      border: 1px solid var(--line); background: var(--card); padding: 9px 18px; border-radius: 999px;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+    .contact a:hover { border-color: var(--green); transform: translateY(-2px); }
+
+    .down { display: block; width: 44px; margin: 40px auto 0; color: var(--rose-deep); }
+    .down svg { display: block; width: 100%; height: auto; }
+
+    section { margin-top: 56px; scroll-margin-top: 70px; }
+    h2 { font-family: var(--serif); font-weight: 400; font-size: 1.9rem; margin: 0 0 22px; text-align: center; }
+    h2::after { content: ""; display: block; width: 36px; height: 1px; background: var(--rose-deep); margin: 12px auto 0; }
+
+    .project {
+      background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+      padding: 28px 30px; margin-bottom: 18px; box-shadow: 0 1px 2px rgba(180, 86, 106, 0.06);
+      transition: opacity .7s ease, transform .7s ease, translate .2s ease, border-color .2s ease;
+    }
+    .project:hover { translate: 0 -3px; border-color: var(--rose-deep); }
+    .num { font-family: var(--serif); font-style: italic; color: var(--rose-deep); font-size: 1rem; margin-bottom: 4px; }
+    .project h3 { font-family: var(--serif); font-weight: 400; margin: 0 0 8px; font-size: clamp(1.5rem, 5vw, 1.85rem); line-height: 1.2; }
+    .project p { margin: 0 0 16px; color: var(--muted); font-size: 1.02rem; }
+    .thumb { width: 100%; border-radius: 12px; margin-bottom: 18px; display: block; border: 1px solid var(--line); }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .tags span { font-size: .78rem; font-weight: 700; background: var(--mint-soft); color: var(--green-text); padding: 3px 11px; border-radius: 999px; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .links a {
+      color: #fff; background: var(--green); text-decoration: none; font-weight: 700; font-size: .93rem;
+      padding: 10px 20px; border-radius: 10px; transition: opacity .15s ease, transform .15s ease;
+    }
+    .links a:hover { opacity: .9; transform: translateY(-2px); }
+    .links a.ghost { background: transparent; color: var(--green-text); border: 1px solid var(--green); }
+
+    .about { text-align: center; max-width: 36em; margin: 0 auto; color: var(--muted); font-size: 1.05rem; }
+    footer { margin-top: 64px; color: var(--muted); font-size: .88rem; text-align: center; }
+
+    a:focus-visible { outline: 3px solid var(--rose-deep); outline-offset: 3px; }
+
+    /* ---------- motion ---------- */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); filter: blur(6px); }
+      to   { opacity: 1; transform: none; filter: none; }
+    }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+
+    .avatar  { animation: rise .8s .05s both; }
+    .eyebrow { animation: rise .8s .1s both; }
+    h1       { animation: rise 1s .25s both; }
+    .intro   { animation: rise .9s 1.3s both; }
+    .contact { animation: rise .9s 1.5s both; }
+    .down    { animation: rise .9s 1.8s both, bob 2.2s 2.8s ease-in-out infinite; }
+
+    /* sections and cards fade up as you scroll to them (only when the script runs) */
+    .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity .7s ease, transform .7s ease; }
+    .js .reveal.in { opacity: 1; transform: none; }
+
+    @media (max-width: 520px) {
+      header { padding-top: 48px; }
+      nav a { padding: 6px 12px; }
+      .project { padding: 24px 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .js .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
+  <div class="wrap">
+
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <header>
+      <!-- Optional photo: put a picture in an "images" folder and uncomment -->
+      <!-- <img class="avatar" src="images/me.jpg" alt="Photo of Ungu"> -->
+
+      <!-- EDIT: the little line above your name, and your name -->
+      <p class="eyebrow">Data Science &middot; Responsible AI &middot; New York</p>
+      <h1>Ungu</h1>
+
+      <!-- One thin line drawing of New York: Statue of Liberty, Brooklyn Bridge, Empire State, Chrysler, One WTC -->
+      <svg class="skyline" viewBox="0 0 800 140" fill="none" stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- water line -->
+        <path d="M0 120 H800"/>
+        <path class="dots" d="M24 128 H84 M120 128 H196 M240 128 H300 M360 128 H430 M480 128 H560 M610 128 H690 M720 128 H780" stroke-dasharray="2 7" opacity=".6"/>
+
+        <!-- Statue of Liberty -->
+        <path d="M50 120 V100 H70 V120 M53 100 V92 H67 V100 M55 92 L58 62 H64 L67 92"/>
+        <circle cx="61" cy="56" r="4"/>
+        <path d="M57 53 L54 46 M59 52 L58 44 M61 51 L61 43 M63 52 L64 44 M65 53 L68 46"/>
+        <path d="M64 66 L74 38 M72 38 H78 L77 43 H73Z M75 36 q-3 -5 0 -9 q3 4 0 9"/>
+        <path d="M58 70 l-4 6 h5"/>
+
+        <!-- Brooklyn Bridge -->
+        <path d="M105 100 H285"/>
+        <path d="M130 120 V70 H150 V120 M135 120 V93 a5 5 0 0 1 10 0 V120 M230 120 V70 H250 V120 M235 120 V93 a5 5 0 0 1 10 0 V120"/>
+        <path d="M105 100 Q125 74 140 70 Q195 110 250 70 Q265 74 285 100"/>
+        <path d="M160 82 V100 M175 87 V100 M195 90 V100 M215 87 V100 M230 82 V100" stroke-width="1"/>
+
+        <!-- Empire State Building -->
+        <path d="M312 120 V86 H319 V68 H325 V54 H330 V42 H334 V30 L337 12 L340 30 V42 H344 V54 H349 V68 H355 V86 H362 V120 M337 12 V2"/>
+
+        <!-- Chrysler Building -->
+        <path d="M396 120 V62 H424 V120 M396 62 Q396 34 410 22 Q424 34 424 62 M401 62 Q401 40 410 30 Q419 40 419 62 M406 62 Q406 46 410 38 Q414 46 414 62 M410 22 V4"/>
+
+        <!-- One World Trade Center -->
+        <path d="M455 120 L462 36 H478 L485 120 M462 36 L470 20 L478 36 M470 20 V3"/>
+
+        <!-- the rest of the skyline -->
+        <path d="M505 120 V82 H525 V120 M531 120 V70 H557 V120 M563 120 V92 H585 V120 M595 120 V62 H625 V120 M604 62 V54 M611 62 V54 M602 54 H613 L611 48 H605Z M635 120 V78 H660 V120 M667 120 V94 H695 V120 M705 120 V66 H735 V120 M743 120 V86 H775 V120"/>
+      </svg>
+    </header>
+
+    <p class="intro">I turn data into insights, insights into decisions, and ideas into real-world solutions. M.S. Data Science student at Columbia University, interested in machine learning, statistical modeling and responsible AI. These are some projects I've worked on.</p>
+
+    <div class="contact" id="contact">
+      <!-- EDIT: your email and links -->
+      <a href="mailto:ungusiwi@gmail.com">ungusiwi@gmail.com</a>
+      <a href="https://github.com/ungu-maharunti">GitHub</a>
+      <!-- <a href="https://www.linkedin.com/in/YOUR-LINKEDIN/">LinkedIn</a> -->
+    </div>
+
+    <a class="down" href="#work" aria-label="Scroll to my work">
+      <svg viewBox="0 0 48 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6 L24 18 L42 6"/></svg>
+    </a>
+
+    <main>
+      <section id="work">
+        <h2 class="reveal">Work</h2>
+
+        <!-- Copy a whole <article> block to add another project. Change the number too. -->
+
+        <article class="project reveal">
+          <div class="num">01</div>
+          <h3>Winning B2B: Regional Based Community Value</h3>
+          <p>A white paper on how a regional business unit can win B2B customers by building value around local communities rather than selling products alone.</p>
+          <div class="tags"><span>White paper</span><span>B2B strategy</span><span>Research</span></div>
+          <div class="links">
+            <!-- TODO: put the PDF in a "files" folder and change href to files/white-paper.pdf -->
+            <a href="#">View PDF</a>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <div class="num">02</div>
+          <h3>FairTrial Hackathon</h3>
+          <p>A hackathon project on making trials fairer, pitched as a short design deck built with my team.</p>
+          <div class="tags"><span>Hackathon</span><span>Pitch</span><span>Responsible AI</span></div>
+          <div class="links">
+            <a href="https://canva.link/vftndsw6tmq4to3">View slides</a>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <div class="num">03</div>
+          <h3>New in NYC</h3>
+          <p>AI helpers for students new to New York: apartments, free events and furniture. I built the free-events helper, which plans a day from free events and pop-ups with travel and wait estimates. A group project with two teammates.</p>
+          <div class="tags"><span>Python</span><span>Gemini</span><span>Tool calling</span><span>Cloud Run</span></div>
+          <div class="links">
+            <a href="https://ieor4570-project1-git-770026520963.us-east1.run.app/">Live app</a>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <div class="num">04</div>
+          <h3>Responsible AI Evaluation Demo</h3>
+          <p>An interactive demo for evaluating AI model behavior, such as bias and sycophancy, so you can see how a model's answers are judged.</p>
+          <div class="tags"><span>Responsible AI</span><span>LLM evaluation</span><span>Web demo</span></div>
+          <div class="links">
+            <a href="https://rai-eval-demo.vercel.app/">Open demo</a>
+          </div>
+        </article>
+
+        <article class="project reveal">
+          <div class="num">05</div>
+          <h3>Auraku</h3>
+          <p>A mobile app concept, from the idea through the screen designs, presented as a slide deck.</p>
+          <div class="tags"><span>Mobile</span><span>Product design</span></div>
+          <div class="links">
+            <a href="https://docs.google.com/presentation/d/1RvXUAgDj1EPnOD99CM0iKH0SrMqX7mlqIbELkJtCztI/edit?usp=sharing">View slides</a>
+          </div>
+        </article>
+      </section>
+
+      <section id="about">
+        <h2 class="reveal">About</h2>
+        <!-- EDIT: a few sentences about you -->
+        <p class="about reveal">I'm an M.S. Data Science student at Columbia University. I like turning messy data into clear decisions, and I'm most interested in machine learning, statistical modeling and making AI systems fair and trustworthy. I'm looking for roles where I can build and evaluate data and AI products.</p>
+      </section>
+    </main>
+
+    <footer>&copy; 2026 Ungu &middot; New York</footer>
+  </div>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* 1. Skyline draws itself, line by line */
+      var sky = document.querySelector('.skyline');
+      if (sky && !reduce && sky.animate) {
+        var parts = sky.querySelectorAll('path:not(.dots), circle');
+        parts.forEach(function (el, i) {
+          var len = el.getTotalLength ? el.getTotalLength() : 0;
+          if (!len) return;
+          el.style.strokeDasharray = len;
+          el.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+            { duration: 1700, delay: 500 + i * 45, easing: 'ease-out', fill: 'backwards' });
+        });
+        var dots = sky.querySelector('.dots');
+        if (dots) dots.animate([{ opacity: 0 }, { opacity: 0.6 }], { duration: 1200, delay: 1900, fill: 'backwards' });
+      }
+
+      /* 2. Sections and cards fade up when scrolled into view */
+      var items = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !reduce) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          });
+        }, { threshold: 0.15 });
+        items.forEach(function (el) { io.observe(el); });
+      } else {
+        items.forEach(function (el) { el.classList.add('in'); });
+      }
+
+      /* 3. Thin line shapes drifting slowly in the background */
+      var canvas = document.getElementById('bg');
+      if (!canvas || !canvas.getContext) return;
+      var ctx = canvas.getContext('2d');
+      var w = 0, h = 0, shapes = [], raf = 0;
+
+      function makeShapes() {
+        var n = Math.max(10, Math.round((w * h) / 90000));
+        shapes = [];
+        for (var i = 0; i < n; i++) {
+          var sides = 3 + Math.floor(Math.random() * 3);
+          var r = 24 + Math.random() * 70;
+          var pts = [];
+          for (var k = 0; k < sides; k++) {
+            var ang = (k / sides) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
+            var rr = r * (0.6 + Math.random() * 0.5);
+            pts.push([Math.cos(ang) * rr, Math.sin(ang) * rr]);
+          }
+          shapes.push({
+            x: Math.random() * w, y: Math.random() * h, r: r, pts: pts,
+            rot: Math.random() * Math.PI * 2, vr: (Math.random() - 0.5) * 0.003,
+            vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+            col: Math.random() < 0.7 ? '180,86,106' : '47,125,95',
+            a: 0.18 + Math.random() * 0.22
+          });
+        }
+      }
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+        shapes.forEach(function (s) {
+          ctx.save();
+          ctx.translate(s.x, s.y);
+          ctx.rotate(s.rot);
+          ctx.beginPath();
+          s.pts.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); });
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(' + s.col + ',' + s.a + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+      function step() {
+        shapes.forEach(function (s) {
+          s.x += s.vx; s.y += s.vy; s.rot += s.vr;
+          var m = s.r * 1.5;
+          if (s.x < -m) s.x = w + m; else if (s.x > w + m) s.x = -m;
+          if (s.y < -m) s.y = h + m; else if (s.y > h + m) s.y = -m;
+        });
+        draw();
+        raf = requestAnimationFrame(step);
+      }
+      function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth; h = window.innerHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        makeShapes();
+        draw();
+      }
+      window.addEventListener('resize', resize);
+      resize();
+      if (!reduce) {
+        raf = requestAnimationFrame(step);
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(step);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
